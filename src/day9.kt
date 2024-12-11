@@ -71,7 +71,7 @@ fun insertBlockPart2(block: Block): Boolean{ // returns true if an additional bl
     var additionalBlockAdded = false
     try{
         val firstFreeBlock = diskMap.first {
-            it.length >= block.length && it.id == -1 &&gi diskMap.indexOf(it) < diskMap.indexOf(block)
+            it.length >= block.length && it.id == -1 && diskMap.indexOf(it) < diskMap.indexOf(block)
         }
         val remainingItems = firstFreeBlock.length - block.length
         if(remainingItems > 0) { // Block does not fill current block completely
