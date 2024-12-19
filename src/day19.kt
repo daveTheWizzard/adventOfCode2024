@@ -2,16 +2,16 @@ import helpers.*
 
 var patterns: List<String> = listOf()
 var designs: List<String> = listOf()
-var matchable: MutableSet<String> = mutableSetOf()
-var notMatchable: MutableSet<String> = mutableSetOf()
+val numberOfArrangements: MutableMap<String, Long> = mutableMapOf()
 
 fun main(){
     val input = readInput("input_day19")
     parseInput(input)
     val result = designs.map{
-        println("Considered pattern $it.")
-        matchDesign(it)
-    }.count { it }
+        val c = countArrangements(it)
+        println("Number of possible arrangements for pattern $it: $c.")
+        c.toLong()
+    }.sum()
     println("Number of matches: $result")
 }
 
@@ -20,34 +20,17 @@ private fun parseInput(input: List<String>){
     designs = input.subList(2, input.count())
 }
 
-private fun getNumberOfPossibleMatches(design: String): Int{
-    return 0
-}
-private fun matchDesign(design: String): Boolean {
-    //println("Trying to match $design")
-    if(matchable.contains(design))
-        return true
-    if(notMatchable.contains(design))
-        return false
-    //println()
-    //println("Considering design $design")
-    if (patterns.map { it == design }.contains(true)) {
-        //println("The design $design is equal to the pattern ${patterns.filter{it == design}}")
-        return true
-    }
-    if (patterns.map { design.startsWith(it) }.contains(true)) {
-        //println("Design starts with the patterns ${patterns.filter{design.startsWith(it)}}")
-        //println("Working with substrings ${patterns.filter{design.startsWith(it)}.map{design.substring(it.count(), design.count())}}.")
-    }
+private fun countArrangements(design: String): Long {
+    var numberArrangements: Long = 0
+    if(design == "")
+        return 1
+    if(numberOfArrangements.keys.contains(design))
+        return numberOfArrangements[design]!!
     patterns.forEach {
-        if(it.count() <= design.count()) {
-            val substring = design.substring(it.count(), design.count())
-            if (design.startsWith(it) && matchDesign(substring)) {
-                matchable.add(design)
-                return true
-            }
+        if (design.startsWith(it)) {
+            numberArrangements += countArrangements(design.substring(it.count(), design.count()))
+            numberOfArrangements[design] = numberArrangements
         }
     }
-    notMatchable.add(design)
-    return false
+    return numberArrangements
 }
