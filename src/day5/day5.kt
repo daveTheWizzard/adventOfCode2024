@@ -1,3 +1,5 @@
+package day5
+
 import kotlin.io.path.Path
 import kotlin.io.path.readLines
 
