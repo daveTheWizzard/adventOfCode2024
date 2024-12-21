@@ -1,12 +1,6 @@
 package helpers
 
-import Orientation
-
-interface Node {
-    abstract val x: Int
-    abstract val y: Int
-    abstract val o: Orientation
-}
+interface Node
 
 data class Edge(val node1: Node, val node2: Node, val distance: Int)
 
@@ -73,6 +67,17 @@ class ShortestPathResult(val prev: Map<Node, Node?>, val dist: Map<Node, Int>, v
         return shortestPath(from, last, list) + to
     }
 
+    fun shortestPathIterative(from: Node = source, to: Node = target): List<Node> {
+        val path: MutableList<Node> = mutableListOf()
+        var currentNode = to
+        while(currentNode != from){
+            path.add(0, currentNode)
+            currentNode = prev[currentNode] ?: break
+        }
+        return path
+    }
+
+
     fun shortestDistance(): Int? {
         val shortest = dist[target]
         if (shortest == Integer.MAX_VALUE) {
@@ -80,5 +85,4 @@ class ShortestPathResult(val prev: Map<Node, Node?>, val dist: Map<Node, Int>, v
         }
         return shortest
     }
-
 }
