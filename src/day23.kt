@@ -1,4 +1,5 @@
 import helpers.*
+import kotlin.math.max
 
 private val nodes: MutableSet<String> = mutableSetOf()
 private val edges: MutableSet<Pair<String, String>> = mutableSetOf()
@@ -12,9 +13,19 @@ fun main(){
     chiefNodes.forEach {
         foundCliques.addAll(getCliques(it))
     }
-    println("All cliques:")
-    foundCliques.forEach { println(it) }
     println("Found ${foundCliques.count()} many cliques!")
+
+    val maximumCliques: MutableSet<Set<String>> = mutableSetOf()
+    nodes.forEach {
+        maximumCliques.add(getMaximumClique(it))
+    }
+    val sizeOfMaximumClique = maximumCliques.map{it.count()}.max()
+    val maximumClique = maximumCliques.first {it.count() == sizeOfMaximumClique}
+    val maximumCliqueSorted = maximumClique.sorted()
+    println("Maximum clique sorted: ")
+    maximumCliqueSorted.forEach {
+        print("$it,")
+    }
 }
 
 private fun parseInput(){
@@ -41,6 +52,22 @@ private fun getCliques(chiefNode: String): MutableSet<Set<String>>{
         }
     }
     return result
+}
+
+private fun getMaximumClique(startNode: String): Set<String>{
+    val maximumClique = mutableSetOf(startNode)
+    nodes.forEach {
+       if(it.connectedToAll(maximumClique)) {
+          maximumClique.add(it)
+       }
+    }
+    return maximumClique
+}
+
+private fun String.connectedToAll(clique: Set<String>): Boolean{
+   return clique.all {
+       this.connectedTo(it)
+   }
 }
 
 private fun String.connectedTo(n: String): Boolean{
